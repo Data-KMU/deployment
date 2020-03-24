@@ -1,0 +1,88 @@
+version: '2.2'
+
+volumes:
+  attachment-files:
+    external: false
+  mongo-data:
+    external: false
+
+services:
+  mongodb:
+    restart: unless-stopped
+    image: mongo
+    container_name: mongodb
+    expose:
+        - 27017
+    volumes:
+        - mongo-data:/data/db
+    healthcheck:
+        test: echo 'db.stats().ok' | mongo localhost:27017/test --quiet
+        interval: 10s
+        timeout: 10s
+        retries: 5
+
+  phpmoadmin:
+    image: thinkcube/phpmoadmin:latest
+    container_name: phpmoadmin
+    restart: "no"
+    environment:
+        VIRTUAL_HOST: phpmoadmin.mkay.at
+        LETSENCRYPT_HOST: phpmoadmin.mkay.at
+        LETSENCRYPT_EMAIL: letsencrypt@kara-software.at
+    links:
+     - mongodb:db
+
+  attachment-server:
+    image: weagree/server-attachment:latest
+    container_name: server-attachment
+    restart: unless-stopped
+    environment:
+        VIRTUAL_HOST: attachment.weagree.io
+        VIRTUAL_PORT: 8080
+        LETSENCRYPT_HOST: attachment.weagree.io
+        LETSENCRYPT_EMAIL: letsencrypt@kara-software.at
+    expose:
+      - "8080"
+    links:
+      - mongodb
+    volumes:
+      - attachment-files:/uploadDir
+
+  agreement-server:
+    image: weagree/server-agreement:latest
+    container_name: server-agreement
+    restart: unless-stopped
+    environment:
+        VIRTUAL_HOST: agreement.weagree.io
+        VIRTUAL_PORT: 8090
+        LETSENCRYPT_HOST: agreement.weagree.io
+        LETSENCRYPT_EMAIL: letsencrypt@kara-software.at
+    expose:
+      - "8090"
+    links:
+      - mongodb
+
+  email-server:
+    image: weagree/server-email:latest
+    container_name: server-email
+    restart: unless-stopped
+    environment:
+        VIRTUAL_HOST: email.weagree.io
+        VIRTUAL_PORT: 8100
+        LETSENCRYPT_HOST: email.weagree.io
+        LETSENCRYPT_EMAIL: letsencrypt@kara-software.at
+    expose:
+      - "8100"
+    links:
+      - mongodb
+
+  client:
+    image: nginx
+    container_name: webapp
+    restart: unless-stopped
+    environment:
+        VIRTUAL_HOST: weagree.io
+        LETSENCRYPT_HOST: weagree.io
+        LETSENCRYPT_EMAIL: letsencrypt@kara-software.at
+    volumes:
+      - /home/agreeo/client:/usr/share/nginx/html:ro
