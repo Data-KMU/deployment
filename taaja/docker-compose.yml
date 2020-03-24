@@ -60,7 +60,7 @@ services:
     restart: unless-stopped
     environment:
         VIRTUAL_HOST: redcat.taaja.io
-        VIRTUAL_PORT: 8091
+        VIRTUAL_PORT: 8092
         LETSENCRYPT_HOST: redcat.taaja.io
         LETSENCRYPT_EMAIL: letsencrypt@kara-software.at
     expose:
@@ -74,7 +74,7 @@ services:
     restart: unless-stopped
     environment:
         VIRTUAL_HOST: purpletiger.taaja.io
-        VIRTUAL_PORT: 8091
+        VIRTUAL_PORT: 8093
         LETSENCRYPT_HOST: purpletiger.taaja.io
         LETSENCRYPT_EMAIL: letsencrypt@kara-software.at
     expose:
