@@ -19,7 +19,7 @@ services:
         timeout: 10s
         retries: 5
 
-  phpmoadmin:
+  taaja-phpmoadmin:
     image: thinkcube/phpmoadmin:latest
     container_name: phpmoadmin
     restart: "no"
