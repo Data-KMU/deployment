@@ -21,7 +21,7 @@ services:
 
   taaja-phpmoadmin:
     image: thinkcube/phpmoadmin:latest
-    container_name: phpmoadmin
+    container_name: taaja-phpmoadmin
     restart: "no"
     environment:
         VIRTUAL_HOST: phpmoadmin.taaja.io
