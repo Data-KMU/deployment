@@ -41,6 +41,8 @@ services:
         LETSENCRYPT_EMAIL: letsencrypt@kara-software.at
     expose:
       - "8090"
+    links:
+      -  taaja-mongodb:db
       
   greeneagle:
     image: taaja/greeneagle:latest
